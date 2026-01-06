@@ -1,0 +1,585 @@
+// Fuentes Component Styles
+$primary-color: #6366f1;
+$primary-dark: #4f46e5;
+$primary-light: #818cf8;
+$secondary-color: #8b5cf6;
+$success-color: #10b981;
+$warning-color: #f59e0b;
+$danger-color: #ef4444;
+$dark-bg: #0f172a;
+$dark-surface: #1e293b;
+$dark-border: #334155;
+$text-primary: #f8fafc;
+$text-secondary: #94a3b8;
+$text-muted: #64748b;
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+.fuentes-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, $dark-bg 0%, #1a1a2e 100%);
+    padding: 24px;
+}
+
+.page-header {
+    margin-bottom: 32px;
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+
+        .header-left {
+            .page-title {
+                font-size: 32px;
+                font-weight: 700;
+                color: $text-primary;
+                margin: 0 0 8px 0;
+            }
+
+            .page-subtitle {
+                font-size: 14px;
+                color: $text-secondary;
+                margin: 0;
+            }
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .scrape-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, $success-color 0%, #059669 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: $transition;
+
+            svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            &:hover:not(:disabled) {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4);
+            }
+
+            &:active:not(:disabled) {
+                transform: translateY(0);
+            }
+
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        }
+
+        .create-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: $transition;
+
+            svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+            }
+
+            &:active {
+                transform: translateY(0);
+            }
+        }
+    }
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 16px;
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid $dark-border;
+        border-top-color: $primary-color;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    p {
+        color: $text-secondary;
+        font-size: 14px;
+        margin: 0;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.sources-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.source-card {
+    background: $dark-surface;
+    border-radius: 12px;
+    border: 1px solid $dark-border;
+    overflow: hidden;
+    transition: $transition;
+
+    &:hover {
+        border-color: rgba(99, 102, 241, 0.3);
+        box-shadow: $shadow-lg;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid $dark-border;
+
+        .source-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+
+            .source-icon {
+                width: 48px;
+                height: 48px;
+                background: rgba(99, 102, 241, 0.1);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: $primary-light;
+
+                svg {
+                    width: 24px;
+                    height: 24px;
+                }
+            }
+
+            .source-name {
+                font-size: 18px;
+                font-weight: 600;
+                color: $text-primary;
+                margin: 0 0 4px 0;
+            }
+
+            .source-url {
+                font-size: 13px;
+                color: $primary-light;
+                text-decoration: none;
+                transition: $transition;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+
+        .source-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+
+            &.status-active {
+                background: rgba(16, 185, 129, 0.1);
+                color: $success-color;
+            }
+
+            &.status-inactive {
+                background: rgba(239, 68, 68, 0.1);
+                color: $danger-color;
+            }
+        }
+    }
+
+    .card-body {
+        padding: 20px;
+
+        .source-meta {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+
+            .meta-item {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+
+                .meta-icon {
+                    width: 18px;
+                    height: 18px;
+                    color: $text-secondary;
+                }
+
+                .meta-label {
+                    font-size: 13px;
+                    color: $text-secondary;
+                }
+
+                .meta-value {
+                    font-size: 13px;
+                    color: $text-primary;
+                    font-weight: 500;
+                }
+            }
+        }
+    }
+
+    .card-footer {
+        display: flex;
+        gap: 8px;
+        padding: 16px 20px;
+        background: rgba(15, 23, 42, 0.3);
+        border-top: 1px solid $dark-border;
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            border: 1px solid $dark-border;
+            border-radius: 8px;
+            cursor: pointer;
+            color: $text-secondary;
+            transition: $transition;
+
+            svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            &:hover {
+                background: rgba(99, 102, 241, 0.1);
+                border-color: $primary-color;
+                color: $primary-light;
+            }
+
+            &.toggle-btn:hover {
+                background: rgba(16, 185, 129, 0.1);
+                border-color: $success-color;
+                color: $success-color;
+            }
+
+            &.edit-btn:hover {
+                background: rgba(245, 158, 11, 0.1);
+                border-color: $warning-color;
+                color: $warning-color;
+            }
+
+            &.delete-btn:hover {
+                background: rgba(239, 68, 68, 0.1);
+                border-color: $danger-color;
+                color: $danger-color;
+            }
+        }
+    }
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+
+    .empty-icon {
+        width: 80px;
+        height: 80px;
+        color: $text-muted;
+        margin-bottom: 24px;
+    }
+
+    p {
+        color: $text-primary;
+        font-size: 18px;
+        font-weight: 500;
+        margin: 0 0 8px 0;
+    }
+
+    .empty-hint {
+        color: $text-secondary;
+        font-size: 14px;
+        margin: 0;
+    }
+}
+
+// Modal Styles
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal {
+    background: $dark-surface;
+    border-radius: 12px;
+    border: 1px solid $dark-border;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: $shadow-xl;
+    overflow: hidden;
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid $dark-border;
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: $text-primary;
+            margin: 0;
+        }
+
+        .close-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: $text-secondary;
+            transition: $transition;
+
+            svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            &:hover {
+                background: rgba(239, 68, 68, 0.1);
+                color: $danger-color;
+            }
+        }
+    }
+
+    .modal-body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            label {
+                font-size: 14px;
+                font-weight: 500;
+                color: $text-secondary;
+            }
+
+            .form-input,
+            .form-select {
+                padding: 10px 14px;
+                background: rgba(15, 23, 42, 0.5);
+                border: 1px solid $dark-border;
+                border-radius: 8px;
+                color: $text-primary;
+                font-size: 14px;
+                outline: none;
+                transition: $transition;
+
+                &:focus {
+                    border-color: $primary-color;
+                    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+                }
+            }
+
+            .form-select {
+                cursor: pointer;
+            }
+
+            .checkbox-label {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+
+                input[type="checkbox"] {
+                    width: 18px;
+                    height: 18px;
+                    accent-color: $primary-color;
+                }
+
+                span {
+                    color: $text-primary;
+                    font-size: 14px;
+                }
+            }
+        }
+    }
+
+    .modal-footer {
+        display: flex;
+        gap: 12px;
+        padding: 20px;
+        background: rgba(15, 23, 42, 0.3);
+        border-top: 1px solid $dark-border;
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: $transition;
+
+            &.btn-secondary {
+                background: transparent;
+                border: 1px solid $dark-border;
+                color: $text-secondary;
+
+                &:hover {
+                    background: rgba(15, 23, 42, 0.5);
+                    border-color: $text-muted;
+                }
+            }
+
+            &.btn-primary {
+                background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+                color: white;
+
+                &:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+                }
+
+                &:active {
+                    transform: translateY(0);
+                }
+            }
+        }
+    }
+}
+
+// Responsive
+@media (max-width: 768px) {
+    .fuentes-container {
+        padding: 16px;
+    }
+
+    .page-header {
+        .header-content {
+            flex-direction: column;
+            align-items: stretch;
+
+            .create-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    }
+
+    .source-card {
+        .card-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+
+            .source-info {
+                width: 100%;
+            }
+        }
+
+        .card-body {
+            .source-meta {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    }
+}
+
+// Snackbar Styles
+::ng-deep .mat-mdc-snack-bar-container {
+    .mdc-snackbar {
+        background: $dark-surface;
+        color: $text-primary;
+        border: 1px solid $dark-border;
+
+        .mdc-snackbar__label {
+            font-size: 14px;
+        }
+
+        .mat-mdc-button.mat-mdc-button-base {
+            color: $primary-light;
+            font-weight: 600;
+
+            &:hover {
+                background: rgba(99, 102, 241, 0.1);
+            }
+        }
+    }
+
+    &.error-snackbar {
+        .mdc-snackbar {
+            background: rgba(239, 68, 68, 0.95);
+            border-color: $danger-color;
+        }
+    }
+}

@@ -1,0 +1,104 @@
+<div class="ultimo-minuto-container">
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1 class="page-title">
+                    <span class="live-indicator">●</span>
+                    Último Minuto
+                </h1>
+                <p class="page-subtitle">Noticias de última hora en tiempo real</p>
+            </div>
+            <div class="header-actions">
+                <button class="refresh-btn" (click)="refreshNews()" [disabled]="refreshing">
+                    <svg class="refresh-icon" [class.spinning]="refreshing" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    <span>Actualizar</span>
+                </button>
+                <div class="auto-refresh-toggle">
+                    <label class="toggle-label">
+                        <input type="checkbox" [(ngModel)]="autoRefresh" (change)="toggleAutoRefresh()">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-text">Auto-refresh</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar">
+        <div class="filter-group">
+            <label class="filter-label">Categoría:</label>
+            <select class="filter-select" [(ngModel)]="categoryFilter">
+                <option *ngFor="let category of categories" [value]="category">
+                    {{ category === 'all' ? 'Todas' : category }}
+                </option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Fuente:</label>
+            <select class="filter-select" [(ngModel)]="sourceFilter">
+                <option *ngFor="let source of sources" [value]="source">
+                    {{ source === 'all' ? 'Todas' : source }}
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Cargando últimas noticias...</p>
+    </div>
+
+    <!-- News Grid -->
+    <div class="news-grid" *ngIf="!loading">
+        <div class="news-card" *ngFor="let news of filteredNews">
+            <div class="news-image" *ngIf="news.imageUrl">
+                <img [src]="news.imageUrl" [alt]="news.title">
+                <div class="news-badge" [class]="getPriorityClass(news.priority)">
+                    {{ getPriorityText(news.priority) }}
+                </div>
+            </div>
+            <div class="news-content">
+                <div class="news-header">
+                    <span class="news-category">{{ news.category }}</span>
+                    <span class="news-time">{{ formatDate(news.publishedAt) }}</span>
+                </div>
+                <h3 class="news-title">{{ news.title }}</h3>
+                <p class="news-excerpt">{{ news.content.substring(0, 150) }}...</p>
+                <div class="news-footer">
+                    <div class="news-source">
+                        <svg class="source-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        {{ news.source }}
+                    </div>
+                    <button class="add-to-broadcast-btn" (click)="addToBroadcast(news)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Agregar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="filteredNews.length === 0">
+            <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <p>No hay noticias de última hora disponibles</p>
+            <p class="empty-hint">Intenta cambiar los filtros o actualiza la página</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,203 @@
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Dashboard</h1>
+        <p class="dashboard-subtitle">Bienvenido a VIRA - Sistema de Noticias Automatizado</p>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Cargando datos...</p>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-content" *ngIf="!loading">
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card stat-card-primary">
+                <div class="stat-icon">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value">{{ stats.totalNews }}</div>
+                    <div class="stat-label">Noticias Totales</div>
+                </div>
+            </div>
+
+            <div class="stat-card stat-card-secondary">
+                <div class="stat-icon">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                        </polygon>
+                    </svg>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value">{{ stats.totalBroadcasts }}</div>
+                    <div class="stat-label">Noticieros Creados</div>
+                </div>
+            </div>
+
+            <div class="stat-card stat-card-success">
+                <div class="stat-icon">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value">{{ stats.activeAutomations }}</div>
+                    <div class="stat-label">Automatizaciones Activas</div>
+                </div>
+            </div>
+
+            <div class="stat-card stat-card-info">
+                <div class="stat-icon">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value">{{ stats.recentNews }}</div>
+                    <div class="stat-label">Noticias Recientes</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Recent News -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        Noticias Recientes
+                    </h2>
+                    <button class="btn btn-primary btn-sm">Ver Todas</button>
+                </div>
+                <div class="card-body">
+                    <div class="news-list">
+                        <div class="news-item" *ngFor="let news of recentNews">
+                            <div class="news-content">
+                                <h3 class="news-title">{{ news.title }}</h3>
+                                <div class="news-meta">
+                                    <span class="news-source">{{ news.source }}</span>
+                                    <span class="news-category">{{ news.category }}</span>
+                                    <span class="news-time">{{ formatDate(news.publishedAt) }}</span>
+                                </div>
+                            </div>
+                            <button class="btn-icon" aria-label="Más opciones">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="1"></circle>
+                                    <circle cx="12" cy="5" r="1"></circle>
+                                    <circle cx="12" cy="19" r="1"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Broadcasts -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon
+                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                            </polygon>
+                        </svg>
+                        Noticieros Recientes
+                    </h2>
+                    <button class="btn btn-primary btn-sm">Ver Todos</button>
+                </div>
+                <div class="card-body">
+                    <div class="broadcasts-list">
+                        <div class="broadcast-item" *ngFor="let broadcast of recentBroadcasts">
+                            <div class="broadcast-content">
+                                <h3 class="broadcast-title">{{ broadcast.title }}</h3>
+                                <div class="broadcast-meta">
+                                    <span class="broadcast-duration">{{ broadcast.duration }} min</span>
+                                    <span class="broadcast-status" [class]="getStatusClass(broadcast.status)">
+                                        {{ getStatusText(broadcast.status) }}
+                                    </span>
+                                    <span class="broadcast-date">{{ formatDate(broadcast.createdAt) }}</span>
+                                </div>
+                            </div>
+                            <button class="btn-icon" aria-label="Más opciones">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="1"></circle>
+                                    <circle cx="12" cy="5" r="1"></circle>
+                                    <circle cx="12" cy="19" r="1"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Automations Status -->
+        <div class="content-card full-width">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                    Estado de Automatizaciones
+                </h2>
+                <button class="btn btn-primary btn-sm">Gestionar</button>
+            </div>
+            <div class="card-body">
+                <div class="automations-grid">
+                    <div class="automation-item" *ngFor="let automation of automations">
+                        <div class="automation-header">
+                            <div class="automation-icon">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path
+                                        d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="automation-info">
+                                <h3 class="automation-name">{{ automation.name }}</h3>
+                                <span class="automation-type">{{ automation.type }}</span>
+                            </div>
+                            <div class="automation-status" [class]="getStatusClass(automation.status)">
+                                {{ getStatusText(automation.status) }}
+                            </div>
+                        </div>
+                        <div class="automation-footer">
+                            <div class="automation-time">
+                                <svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                Última ejecución: {{ formatDate(automation.lastRun) }}
+                            </div>
+                            <div class="automation-time" *ngIf="automation.nextRun">
+                                <svg class="time-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                Próxima ejecución: {{ formatDate(automation.nextRun) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
