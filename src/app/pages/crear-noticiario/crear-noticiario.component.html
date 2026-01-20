@@ -1,0 +1,257 @@
+<div class="crear-noticiario-container">
+    <div class="page-header">
+        <h1 class="page-title">Crear Noticiero</h1>
+        <p class="page-subtitle">Selecciona las noticias y crea tu noticiero personalizado</p>
+    </div>
+
+    <!-- Form Section -->
+    <div class="form-section">
+        <div class="form-card">
+            <h2 class="form-title">Información del Noticiero</h2>
+
+            <div class="form-group">
+                <label for="title">Título del Noticiero *</label>
+                <input type="text" id="title" class="form-input" [(ngModel)]="broadcastTitle"
+                    placeholder="Ej: Noticiero Matutino">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descripción</label>
+                <textarea id="description" class="form-textarea" [(ngModel)]="broadcastDescription"
+                    placeholder="Describe el contenido del noticiero..." rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="duration">Duración (minutos) *</label>
+                <input type="number" id="duration" class="form-input" [(ngModel)]="duration" min="5" max="60">
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+        <!-- Available News -->
+        <div class="news-section">
+            <div class="section-header">
+                <h2 class="section-title">Noticias Disponibles</h2>
+                <div class="filters">
+                    <select class="filter-select" [(ngModel)]="dateFilter">
+                        <option *ngFor="let filter of dateFilters" [value]="filter.value">
+                            {{ filter.label }}
+                        </option>
+                    </select>
+                    <select class="filter-select source-scrape-select" [(ngModel)]="selectedSourceId"
+                        [disabled]="loading || sources.length === 0">
+                        <option value="all">Todas las fuentes</option>
+                        <option *ngFor="let source of sources" [value]="source.id">{{ source.name }}</option>
+                    </select>
+                    <button class="scrape-btn" (click)="scrapeNews()"
+                        [disabled]="loading || sources.length === 0 || selectedSourceId === ''">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                            <polyline points="9 11 12 14 22 14"></polyline>
+                        </svg>
+                        Obtener Noticias
+                    </button>
+                </div>
+            </div>
+
+            <div class="news-list">
+                <div class="loading-state" *ngIf="loading">
+                    <div class="spinner"></div>
+                    <p>Cargando noticias...</p>
+                </div>
+
+                <div class="news-item" *ngFor="let news of filteredNews" (click)="selectNews(news)">
+                    <div class="news-image" *ngIf="news.image_url">
+                        <img [src]="news.image_url" [alt]="news.title">
+                    </div>
+                    <div class="news-content">
+                        <h3 class="news-title">{{ news.title }}</h3>
+                        <p class="news-excerpt">{{ news.content ? news.content.substring(0, 100) : (news.summary ||
+                            '').substring(0, 100) }}...</p>
+                        <div class="news-meta">
+                            <span class="news-source">{{ news.source_name || 'Fuente desconocida' }}</span>
+                        
+                            <span class="news-time">{{ formatReadingTime(news.readingTime) }}</span>
+                            <span class="news-date">{{ formatDate(news.publishedAt) }}</span>
+                        </div>
+                    </div>
+                    <button class="add-btn" aria-label="Agregar noticia">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="empty-state" *ngIf="!loading && filteredNews.length === 0">
+                    <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <p>No hay noticias disponibles con los filtros seleccionados</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selected News -->
+        <div class="selected-section">
+            <div class="section-header">
+                <h2 class="section-title">Noticias Seleccionadas</h2>
+                <div class="selected-count">
+                    <span class="count-number">{{ selectedNews.length }}</span>
+                    <span class="count-label">noticias</span>
+                </div>
+            </div>
+
+            <div class="selected-list">
+                <div class="empty-state" *ngIf="selectedNews.length === 0">
+                    <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="12" y1="18" x2="12" y2="12"></line>
+                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                    </svg>
+                    <p>No has seleccionado ninguna noticia</p>
+                    <p class="empty-hint">Haz clic en las noticias disponibles para agregarlas</p>
+                </div>
+
+                <div class="selected-item" *ngFor="let news of selectedNews; let i = index">
+                    <div class="item-number">{{ i + 1 }}</div>
+                    <div class="item-content">
+                        <h3 class="item-title">{{ news.title }}</h3>
+                        <div class="item-meta">
+                            <span class="item-source">{{ news.source_name || 'Fuente desconocida' }}</span>
+                            <span class="item-time">{{ formatReadingTime(news.readingTime) }}</span>
+                        </div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="action-btn view-btn" (click)="viewNewsDetail(news)" aria-label="Ver detalle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                        <button class="action-btn" (click)="moveNewsUp(i)" [disabled]="i === 0"
+                            aria-label="Mover arriba">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="18 15 12 9 6 15"></polyline>
+                            </svg>
+                        </button>
+                        <button class="action-btn" (click)="moveNewsDown(i)" [disabled]="i === selectedNews.length - 1"
+                            aria-label="Mover abajo">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <button class="action-btn remove-btn" (click)="removeNews(news)" aria-label="Eliminar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Humanize Button -->
+            <button class="humanize-btn" (click)="humanizeNews()" 
+                [disabled]="selectedNews.length === 0 || humanizing">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                <span *ngIf="!humanizing">Humanizar y Reescribir Noticias</span>
+                <span *ngIf="humanizing">
+                    <span class="spinner-small"></span>
+                    Humanizando...
+                </span>
+            </button>
+
+            <!-- Summary Card -->
+            <div class="summary-card" *ngIf="selectedNews.length > 0">
+                <h3 class="summary-title">Resumen del Noticiero</h3>
+                <div class="summary-stats">
+                    <div class="summary-stat">
+                        <span class="stat-label">Noticias:</span>
+                        <span class="stat-value">{{ selectedNews.length }}</span>
+                    </div>
+                    <div class="summary-stat">
+                        <span class="stat-label">Tiempo total:</span>
+                        <span class="stat-value">{{ formatReadingTime(getTotalReadingTime()) }}</span>
+                    </div>
+                    <div class="summary-stat">
+                        <span class="stat-label">Duración máxima:</span>
+                        <span class="stat-value">{{ duration }} min</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="(getTotalReadingTime() / (duration * 60)) * 100"></div>
+                </div>
+                <p class="progress-text" *ngIf="getTotalReadingTime() > duration * 60">
+                    ⚠️ Has excedido la duración máxima del noticiero
+                </p>
+            </div>
+
+            <!-- Create Button -->
+            <button class="create-btn" (click)="createBroadcast()" [disabled]="!canCreateBroadcast() || generating">
+                <span *ngIf="!generating">Crear Noticiero</span>
+                <span *ngIf="generating">
+                    <span class="spinner-small"></span>
+                    Creando...
+                </span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- News Detail Modal -->
+<div class="modal-overlay" *ngIf="selectedNewsDetail" (click)="closeNewsDetail()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2 class="modal-title">{{ selectedNewsDetail.title }}</h2>
+            <button class="modal-close" (click)="closeNewsDetail()" aria-label="Cerrar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-meta">
+                <span class="modal-source">{{ selectedNewsDetail.source_name || 'Fuente desconocida' }}</span>
+                <span class="modal-category">{{ selectedNewsDetail.category || 'General' }}</span>
+                <span class="modal-date">{{ formatDate(selectedNewsDetail.publishedAt) }}</span>
+            </div>
+            <div class="modal-image" *ngIf="selectedNewsDetail.image_url">
+                <img [src]="selectedNewsDetail.image_url" [alt]="selectedNewsDetail.title">
+            </div>
+            <div class="modal-content-text">
+                <h3>Contenido Original</h3>
+                <p>{{ selectedNewsDetail.content }}</p>
+                
+                <div *ngIf="selectedNewsDetail.summary" class="modal-summary">
+                    <h3>Resumen</h3>
+                    <p>{{ selectedNewsDetail.summary }}</p>
+                </div>
+                
+                <div *ngIf="selectedNewsDetail.humanizedContent" class="modal-humanized">
+                    <h3>Contenido Humanizado</h3>
+                    <p>{{ selectedNewsDetail.humanizedContent }}</p>
+                </div>
+            </div>
+            <div class="modal-footer" *ngIf="selectedNewsDetail.original_url">
+                <a [href]="selectedNewsDetail.original_url" target="_blank" rel="noopener noreferrer" class="modal-link">
+                    Ver noticia original
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
